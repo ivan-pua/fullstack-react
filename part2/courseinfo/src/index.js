@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 const Header = (props) => {
   return (
     <div>
-      <h1>{props.course}</h1>
+      <h2>{props.course}</h2>
     </div>
   )
 }
@@ -19,8 +19,8 @@ const Part = (props) => {
 
 const Content = (props) => {
   let parts = props.parts
-  console.log(parts[0]);
-  console.log(parts[0].name);
+  // console.log(parts[0]);
+  // console.log(parts[0].name);
   return (
     <div>
       
@@ -39,49 +39,98 @@ const Content = (props) => {
   )
 }
 
-const Total = (props) => {
+const Total = ({parts}) => {
+  // console.log(parts)
+
+  const total = parts.reduce((sum, single_part) => {
+    console.log('what is happening', sum, single_part)
+    return sum + single_part.exercises
+  }, 0)
+
   return (
     <p>
-      Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}
+      Number of exercises {total}
     </p>
   )
 }
 
-const Course = ({singleCourse}) => {
+const Course = ({single_course}) => {
   return (
     <div>
-    <Header course={singleCourse.name} />
-    <Content parts={singleCourse.parts} />
-    <Total parts={singleCourse.parts} />
+    <Header course={single_course.name} />
+    <Content parts={single_course.parts} />
+    <Total parts={single_course.parts} />
     </div>
   )
 
 }
 
-const App = () => {
-  const course = {
-    id: 1,
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-        id: 1
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 2
-      },
-      {
-        name: 'State of a component',
-        exercises: 14,
-        id: 3
-      }
-    ]
-  }
+const Courses =  ({multiple_courses}) => {
+  // Put components between enclosing tags <div>....</div> 
+  // https://stackoverflow.com/questions/31284169/parse-error-adjacent-jsx-elements-must-be-wrapped-in-an-enclosing-tag
+  return (
+    <div>  
+      <h1>Welcome to Pua's React workshop!</h1>
+    
+      {multiple_courses.map((item) =>
+        <div key={item.id}>
+          {/* Add keys using id of each "item" */}
+          <Course single_course={item} />
+        </div>
+        
+      )}
+    </div>
+  )
 
-  return <Course singleCourse={course} />
+
+}
+
+const App = () => {
+  const courses = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    }, 
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
+  return <Courses multiple_courses={courses} />
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
